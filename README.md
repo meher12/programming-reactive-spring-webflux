@@ -9,7 +9,8 @@ Welcome to the Reactive Microservices tutorial, where we explore the realm of re
 - Implement the `FluxAndMonoGeneratorService` class to create your first Flux and Mono.
 
 ### 2 Testing with JUnit5
-- Develop the `FluxAndMonoGeneratorServiceTest` class for testing Flux using JUnit5.
+- Develop the `FluxAndMonoGeneratorServiceTest` class for testing Flux using JUnit5. 
+* Using ***Ctrl+Alt+T*** to create test method
 
 ### 3 Transforming Data Using Operators in Project Reactor for Flux
 Explore various operators for transforming data in Flux:
@@ -77,3 +78,8 @@ dependencies {
     ```
 2. Unit test Spring Webflux Endpoint using `@WebFluxTest` Annotation
 3. Different Approaches to Unit Testing Flux, Mono and Streaming Server-Sent Events (SSE) Endpoint
+### 2. Reactive Programming in MongoDB for the MovieInfo Service
+1. Create The `MovieInfo class` and `MovieInfoRepository interface`
+2. Config `application.yml` file
+3. Set up the Integration Test using `@DataMongoTest` on `MovieInfoRepositoryIntegTest` class
+   - Write Integration Test for findAll(), findById(), Saving, Updating and Deleting MovieInfo Document
