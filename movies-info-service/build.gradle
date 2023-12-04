@@ -51,3 +51,10 @@ tasks.named('bootBuildImage') {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+sourceSets {
+	test{
+		// Configure Unit and Integration Test Folders in Gradle
+		java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
+	}
+}

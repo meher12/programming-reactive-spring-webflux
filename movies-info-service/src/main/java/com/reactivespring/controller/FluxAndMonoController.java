@@ -18,7 +18,7 @@ public class FluxAndMonoController {
 
     @GetMapping("/mono")
     public Mono<String> helloWorldMono() {
-        return Mono.just("Hell world").log();
+        return Mono.just("Helle world").log();
     }
 
     @GetMapping(value="/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

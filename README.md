@@ -64,4 +64,16 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 }
 ```
-1. Build a Simple Non Blocking API - Flux, Mono, Infinite Streams API in `FluxAndMonoController` class
+####  1. Build a Simple Non Blocking API - Flux, Mono, Infinite Streams API Server-Sent Events (SSE) in `FluxAndMonoController` class
+####  2. Automated Tests using JUnit5 and @WebFluxTest:
+1. Configure Unit and Integration Test Folders in Gradle
+    ```groovy
+    sourceSets {
+        test{
+            // Configure Unit and Integration Test Folders in Gradle
+            java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
+        }
+    }
+    ```
+2. Unit test Spring Webflux Endpoint using `@WebFluxTest` Annotation
+3. Different Approaches to Unit Testing Flux, Mono and Streaming Server-Sent Events (SSE) Endpoint
