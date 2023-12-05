@@ -1,36 +1,39 @@
 package com.reactivespring.controller;
 
-
 import com.reactivespring.domain.MovieInfo;
-import com.reactivespring.repository.MovieInfoRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.reactivespring.service.MoviesInfoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@WebFluxTest(controllers = MoviesInfoController.class)
 @AutoConfigureWebTestClient
-class MoviesInfoControllerIntegTest {
+class MoviesInfoControllerUnitTest {
+
+    @Autowired
+    private WebTestClient webTestClient;
+
+    @MockBean
+    private MoviesInfoService moviesInfoServiceMock;
 
     static String MOVIES_INFO_URL = "/v1/movieinfos";
-    @Autowired
-    MovieInfoRepository movieInfoRepository;
-    @Autowired
-    WebTestClient webTestClient;
 
-    @BeforeEach
-    void setUp() {
+    @Test
+    void getAllMoviesInfo() {
+
         var movieinfos = List.of(new MovieInfo(null, "Batman Begins",
                         2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15")),
                 new MovieInfo(null, "The Dark Knight",
@@ -38,17 +41,8 @@ class MoviesInfoControllerIntegTest {
                 new MovieInfo("abc", "Dark Knight Rises",
                         2012, List.of("Christian Bale", "Tom Hardy"), LocalDate.parse("2012-07-20")));
 
-        movieInfoRepository.saveAll(movieinfos)
-                .blockLast();
-    }
-
-    @AfterEach
-    void tearDown() {
-        movieInfoRepository.deleteAll().block();
-    }
-
-    @Test
-    void getAllMovieInfos() {
+        when(moviesInfoServiceMock.getAllMovieInfos())
+                .thenReturn(Flux.fromIterable(movieinfos));
 
         webTestClient
                 .get()
@@ -61,29 +55,12 @@ class MoviesInfoControllerIntegTest {
     }
 
     @Test
-    void getMovieInfoById() {
-        var movieInfoId = "abc";
-        webTestClient
-                .get()
-                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
-                .exchange()
-                .expectStatus()
-                .is2xxSuccessful()
-                .expectBody()
-               /* .expectBody(MovieInfo.class)
-                .consumeWith(movieInfoEntityExchangeResult -> {
-                    var movieInfo = movieInfoEntityExchangeResult.getResponseBody();
-                    assertNotNull(movieInfo);
-                });*/
-                .jsonPath("$.name")
-                .isEqualTo("Dark Knight Rises");
-    }
-
-    @Test
     void addMovieInfo() {
         //Given
-        var movieinfos = new MovieInfo(null, "Batman Begins1",
+        var movieinfos = new MovieInfo("mockId", "Batman Begins1",
                 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+       when(moviesInfoServiceMock.addMovieInfo(isA(MovieInfo.class)))
+               .thenReturn(Mono.just(movieinfos));
         //When
         webTestClient
                 .post()
@@ -98,6 +75,7 @@ class MoviesInfoControllerIntegTest {
                     var savedMovieInfo = movieInfoEntityExchangeResult.getResponseBody();
                     assertNotNull(savedMovieInfo);
                     assertNotNull(savedMovieInfo.getMovieInfoId());
+                    assertEquals("mockId", savedMovieInfo.getMovieInfoId());
 
                     /*assert savedMovieInfo !=null;
                     assert savedMovieInfo.getMovieInfoId()!=null;*/
@@ -109,8 +87,12 @@ class MoviesInfoControllerIntegTest {
     void updateMovieInfo() {
         //Given
         var movieInfoId = "abc";
-        var movieinfos = new MovieInfo(null, "Batman Begins",
+        var movieinfos = new MovieInfo(movieInfoId, "Batman Begins",
                 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+
+        when(moviesInfoServiceMock.updateMovieInfo(isA(MovieInfo.class), isA(String.class)))
+                .thenReturn(Mono.just(movieinfos));
+
         //When
         webTestClient
                 .put()
@@ -131,16 +113,5 @@ class MoviesInfoControllerIntegTest {
                     assert savedMovieInfo.getMovieInfoId()!=null;*/
 
                 });
-    }
-
-    @Test
-    void deleteMovieInfoById() {
-        var movieInfoId = "abc";
-        webTestClient
-                .delete()
-                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
-                .exchange()
-                .expectStatus()
-                .isNoContent();
     }
 }
