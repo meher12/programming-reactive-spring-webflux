@@ -135,6 +135,20 @@ class MoviesInfoControllerUnitTest {
                     assertNotNull(responseBody);
                     assertEquals(expectedErrorMessage, responseBody);
                 });
+    }
 
+    @Test
+    void updateMovieInfo_notFound() {
+        var id = "def";
+        var updatedMovieInfo = new MovieInfo(null, "Dark Knight Rises 1",
+                2013, List.of("Christian Bale1", "Tom Hardy1"), LocalDate.parse("2012-07-20"));
+
+        webTestClient
+                .put()
+                .uri(MOVIES_INFO_URL + "/{id}", id)
+                .bodyValue(updatedMovieInfo)
+                .exchange()
+                .expectStatus()
+                .is5xxServerError();
     }
 }

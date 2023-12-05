@@ -99,3 +99,5 @@ dependencies {
 1. Bean Validation for Name,Year with @NotBlank and @Positive Annotation Validators on MoviesInfo variables
 2. Customize the Default Error handling using **`ControllerAdvice`**
 3. Bean Validation for List Field using **`@NotBlank`** Annotation
+### 6. Using ResponseEntity with Reactive Types
+- * Using ResponseEntity to dynamically change the Response Status_en
