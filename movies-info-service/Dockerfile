@@ -3,7 +3,7 @@ FROM mongodb/mongodb-community-server:latest
 
 # Set environment variables
 #ENV MONGO_INITDB_ROOT_USERNAME=admin
-#ENV MONGO_INITDB_ROOT_PASSWORD=password
+#ENV MONGO_INITDB_ROOT_PASSWORD=mypassword
 
 # Create a directory to store data
 RUN mkdir -p /data/db

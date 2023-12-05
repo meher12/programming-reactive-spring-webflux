@@ -83,3 +83,10 @@ dependencies {
 2. Config `application.yml` file
 3. Set up the Integration Test using `@DataMongoTest` on `MovieInfoRepositoryIntegTest` class
    - Write Integration Test for findAll(), findById(), Saving, Updating and Deleting MovieInfo Document
+### Build MovieInfo Service using Rest Controller Approach
+**Using curl-commands.txt file to check http requests**
+1. Build a POST endpoint to create a new MovieInfo then handling the Integration Test using JUnit5
+2. Build a GET Endpoint to get all the MoviesInfo  then handling the Integration Test
+3. Build a GET By ID Endpoint to retrieve a MoviesInfo  then handling the Integration Test
+4. Build a PUT Endpoint to update a MovieInfo by ID  then handling the Integration Test
+5. Build the DELETE endpoint to delete a MovieInfo by ID  then handling the Integration Test
