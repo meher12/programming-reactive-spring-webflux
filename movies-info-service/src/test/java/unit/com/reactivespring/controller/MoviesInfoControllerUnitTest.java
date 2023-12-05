@@ -14,8 +14,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
@@ -111,7 +110,31 @@ class MoviesInfoControllerUnitTest {
 
                     /*assert savedMovieInfo !=null;
                     assert savedMovieInfo.getMovieInfoId()!=null;*/
-
                 });
+    }
+
+    @Test
+    void addMovieInfo_validation() {
+        //Given
+        var movieinfos = new MovieInfo(null, "",
+                -2005, List.of(""), LocalDate.parse("2005-06-15"));
+
+        //When
+        webTestClient
+                .post()
+                .uri(MOVIES_INFO_URL)
+                .bodyValue(movieinfos)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(stringEntityExchangeResult -> {
+                   var responseBody = stringEntityExchangeResult.getResponseBody();
+                    System.out.println("ResponseBody: " + responseBody);
+                    var expectedErrorMessage = "movieInfo.cast must be present,movieInfo.name must be present,movieInfo.year must be a Positive Value";
+                    assertNotNull(responseBody);
+                    assertEquals(expectedErrorMessage, responseBody);
+                });
+
     }
 }

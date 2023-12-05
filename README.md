@@ -95,3 +95,7 @@ dependencies {
 1. Unit Test for GetAllMovieInfos endpoint - GET
 2. Unit Test for the create MovieInfo Endpoint - POST
 3. Unit Test for the update MovieInfo Endpoint - PUT
+### 5. Bean Validation using Validators and ControllerAdvice
+1. Bean Validation for Name,Year with @NotBlank and @Positive Annotation Validators on MoviesInfo variables
+2. Customize the Default Error handling using **`ControllerAdvice`**
+3. Bean Validation for List Field using **`@NotBlank`** Annotation
