@@ -142,6 +142,8 @@ class MoviesInfoControllerUnitTest {
         var id = "def";
         var updatedMovieInfo = new MovieInfo(null, "Dark Knight Rises 1",
                 2013, List.of("Christian Bale1", "Tom Hardy1"), LocalDate.parse("2012-07-20"));
+        when(moviesInfoServiceMock.updateMovieInfo(isA(MovieInfo.class), isA(String.class)))
+                .thenReturn(Mono.empty());
 
         webTestClient
                 .put()
@@ -149,6 +151,6 @@ class MoviesInfoControllerUnitTest {
                 .bodyValue(updatedMovieInfo)
                 .exchange()
                 .expectStatus()
-                .is5xxServerError();
+                .isNotFound();
     }
 }

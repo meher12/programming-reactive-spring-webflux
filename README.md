@@ -99,5 +99,20 @@ dependencies {
 1. Bean Validation for Name,Year with @NotBlank and @Positive Annotation Validators on MoviesInfo variables
 2. Customize the Default Error handling using **`ControllerAdvice`**
 3. Bean Validation for List Field using **`@NotBlank`** Annotation
-### 6. Using ResponseEntity with Reactive Types
-- * Using ResponseEntity to dynamically change the Response Status_en
+4. The main difference between the two methods Mono<ResponseEntity<MovieInfo>> and ResponseEntity<Mono<MovieInfo>> is how they handle the response body:
+    ##### Method 1: `public Mono<ResponseEntity<MovieInfo>> updateMovieInfo`
+    This method returns a `Mono` containing a `ResponseEntity<MovieInfo>`. The response body is not immediately available but is emitted asynchronously by the `Mono`. This is particularly useful when additional processing (e.g., fetching updated movie information) on the movie information is required before sending it back to the client.
+   ##### Method 2: `public ResponseEntity<Mono<MovieInfo>> updateMovieInfo`
+   In this method, a `ResponseEntity` is returned, encapsulating a `Mono` of `MovieInfo`. While the response headers are immediately available, the response body is not. The body will be emitted asynchronously by the `Mono`. This approach is beneficial when the goal is to send response headers back to the client as soon as possible without waiting for the movie information to be fully processed.
+
+* In general, choose the method that aligns with your specific use case. If additional processing on the movie information before sending it back is necessary, opt for the first method. Alternatively, if promptly sending the response headers back to the client is the priority, the second method is more appropriate.
+Here is a table that summarizes the key differences between the two methods: <br/>
+
+| Feature            | public Mono<ResponseEntity<MovieInfo>> | public ResponseEntity<Mono<MovieInfo>> |
+|--------------------|----------------------------------------|----------------------------------------|
+| Response body      | Emitted asynchronously by the Mono      | Not immediately available               |
+| Response headers   | Immediately available                  | Immediately available                  |
+| Use case           | Additional processing on movie information | Sending headers as soon as possible   |
+
+
+
