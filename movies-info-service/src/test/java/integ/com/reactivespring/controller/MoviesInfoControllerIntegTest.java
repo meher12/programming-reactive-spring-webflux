@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,8 +35,16 @@ class MoviesInfoControllerIntegTest {
     void setUp() {
         var movieinfos = List.of(new MovieInfo(null, "Batman Begins",
                         2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15")),
-                new MovieInfo(null, "The Dark Knight",
+
+                new MovieInfo(null, "The Dark Knight 1",
                         2008, List.of("Christian Bale", "HeathLedger"), LocalDate.parse("2008-07-18")),
+
+                new MovieInfo(null, "The Dark Knight 2",
+                        2008, List.of("Christian Bale", "HeathLedger"), LocalDate.parse("2008-07-18")),
+
+                new MovieInfo(null, "The Dark Knight 3",
+                        2008, List.of("Christian Bale", "HeathLedger"), LocalDate.parse("2008-07-18")),
+
                 new MovieInfo("abc", "Dark Knight Rises",
                         2012, List.of("Christian Bale", "Tom Hardy"), LocalDate.parse("2012-07-20")));
 
@@ -61,6 +71,23 @@ class MoviesInfoControllerIntegTest {
     }
 
     @Test
+    void getAllMovieInfosByYear() {
+
+        var year = 2008;
+        var uri = UriComponentsBuilder.fromUriString(MOVIES_INFO_URL+"/year")
+                        .queryParam("year", year)
+                                .buildAndExpand().toUri();
+        webTestClient
+                .get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(MovieInfo.class)
+                .hasSize(3);
+    }
+
+    @Test
     void getMovieInfoById() {
         var movieInfoId = "abc";
         webTestClient
@@ -70,13 +97,26 @@ class MoviesInfoControllerIntegTest {
                 .expectStatus()
                 .is2xxSuccessful()
                 .expectBody()
-               /* .expectBody(MovieInfo.class)
-                .consumeWith(movieInfoEntityExchangeResult -> {
-                    var movieInfo = movieInfoEntityExchangeResult.getResponseBody();
-                    assertNotNull(movieInfo);
-                });*/
+                /* .expectBody(MovieInfo.class)
+                 .consumeWith(movieInfoEntityExchangeResult -> {
+                     var movieInfo = movieInfoEntityExchangeResult.getResponseBody();
+                     assertNotNull(movieInfo);
+                 });*/
                 .jsonPath("$.name")
                 .isEqualTo("Dark Knight Rises");
+    }
+
+    @Test
+    void findByYear() {
+
+        // when
+        var movieInfoMono = movieInfoRepository.findByYear(2008).log();
+        // then
+        StepVerifier.create(movieInfoMono)
+                .assertNext(movieInfo -> {
+                    assertEquals("The Dark Knight", movieInfo.getName());
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -114,7 +154,7 @@ class MoviesInfoControllerIntegTest {
         //When
         webTestClient
                 .put()
-                .uri(MOVIES_INFO_URL+ "/{id}", movieInfoId)
+                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
                 .bodyValue(movieinfos)
                 .exchange()
                 .expectStatus()
@@ -125,7 +165,7 @@ class MoviesInfoControllerIntegTest {
                     var updatedMovieInfo = movieInfoEntityExchangeResult.getResponseBody();
                     assertNotNull(updatedMovieInfo);
                     assertNotNull(updatedMovieInfo.getMovieInfoId());
-                    assertEquals("Batman Begins",updatedMovieInfo.getName());
+                    assertEquals("Batman Begins", updatedMovieInfo.getName());
 
                     /*assert savedMovieInfo !=null;
                     assert savedMovieInfo.getMovieInfoId()!=null;*/

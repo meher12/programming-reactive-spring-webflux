@@ -99,7 +99,8 @@ dependencies {
 1. Bean Validation for Name,Year with @NotBlank and @Positive Annotation Validators on MoviesInfo variables
 2. Customize the Default Error handling using **`ControllerAdvice`**
 3. Bean Validation for List Field using **`@NotBlank`** Annotation
-4. The main difference between the two methods Mono<ResponseEntity<MovieInfo>> and ResponseEntity<Mono<MovieInfo>> is how they handle the response body:
+4. Using ResponseEntity with Reactive Types
+5. The main difference between the two methods Mono<ResponseEntity<MovieInfo>> and ResponseEntity<Mono<MovieInfo>> is how they handle the response body:
     ##### Method 1: `public Mono<ResponseEntity<MovieInfo>> updateMovieInfo`
     This method returns a `Mono` containing a `ResponseEntity<MovieInfo>`. The response body is not immediately available but is emitted asynchronously by the `Mono`. This is particularly useful when additional processing (e.g., fetching updated movie information) on the movie information is required before sending it back to the client.
    ##### Method 2: `public ResponseEntity<Mono<MovieInfo>> updateMovieInfo`
@@ -113,6 +114,7 @@ Here is a table that summarizes the key differences between the two methods: <br
 | Response body      | Emitted asynchronously by the Mono      | Not immediately available               |
 | Response headers   | Immediately available                  | Immediately available                  |
 | Use case           | Additional processing on movie information | Sending headers as soon as possible   |
-
-
+### 6. Write a Custom Queries using ReactiveMongoRepository
+1. Implement a Custom Query to retrieve MovieInfo by Year
+2. GET Endpoint to retrieve a MovieInfo by Year - Using ***@RequestParam***,  ***UriComponentsBuilder*** and ***queryParam***
 
