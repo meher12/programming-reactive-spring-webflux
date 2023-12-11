@@ -117,4 +117,8 @@ Here is a table that summarizes the key differences between the two methods: <br
 ### 6. Write a Custom Queries using ReactiveMongoRepository
 1. Implement a Custom Query to retrieve MovieInfo by Year
 2. GET Endpoint to retrieve a MovieInfo by Year - Using ***@RequestParam***,  ***UriComponentsBuilder*** and ***queryParam***
+### 7. Spring WebFlux Under the Hood - Netty and Threading Model
+### 8. Functional Web Module in Spring WebFlux
+**Project name : movies-review-service**
+1. Build a simple RestFul API using Functional Web in `ReviewRouter class`
 

@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  mongo_db:
+    image: "mongodb-community-server"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mongodb-container
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb:/data/db
+volumes:
+  mongodb:
+
+

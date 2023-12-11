@@ -24,3 +24,8 @@ spring:
       port: 27017
       database: local
 
+---
+Logging:
+  level:
+    root: debug
+
