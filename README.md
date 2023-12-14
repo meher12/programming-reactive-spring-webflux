@@ -143,3 +143,17 @@ Here is a table that summarizes the key differences between the two methods: <br
 3. Unit Testing Bean Validation
 ### 12. Custom Global ErrorHandler in Functional Web
 - * Implement the GlobalErrorHandler in Functional Web
+### 13. Handling ResourceNotFound in FunctionalWeb
+1. Resource NotFound(404) in Update Review using GlobalErrorHandler
+   ```java
+   if(ex instanceof ReviewNotFoundException){
+               exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
+               return exchange.getResponse().writeWith(Mono.just(errorMessage));
+           }
+   ```
+   - In updateReview method:
+   ```.switchIfEmpty(Mono.error(new ReviewNotFoundException("Review not found for the given Review id: " + reviewId )));```
+2. Alternate Approach: Resource Not Found(404) in Update Review:
+     ```
+    .switchIfEmpty(ServerResponse.notFound().build());
+    ```

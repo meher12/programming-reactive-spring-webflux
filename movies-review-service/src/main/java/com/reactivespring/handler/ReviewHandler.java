@@ -2,6 +2,7 @@ package com.reactivespring.handler;
 
 import com.reactivespring.domain.Review;
 import com.reactivespring.exception.ReviewDataException;
+import com.reactivespring.exception.ReviewNotFoundException;
 import com.reactivespring.repository.ReviewReactiveRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -22,9 +23,13 @@ import java.util.stream.Collectors;
 public class ReviewHandler {
 
     @Autowired
-    private Validator validator;
-    @Autowired
     ReviewReactiveRepository reviewReactiveRepository;
+    @Autowired
+    private Validator validator;
+
+    private static Mono<ServerResponse> buildReviewResponse(Flux<Review> reviewsFlux) {
+        return ServerResponse.ok().body(reviewsFlux, Review.class);
+    }
 
     public Mono<ServerResponse> addReview(ServerRequest request) {
         return request.bodyToMono(Review.class)
@@ -47,6 +52,11 @@ public class ReviewHandler {
                 .flatMap(ServerResponse.status(HttpStatus.CREATED)::bodyValue);
     }
 
+   /* public Mono<ServerResponse> getReviews(ServerRequest request) {
+        var reviewsFlux = reviewReactiveRepository.findAll();
+        return buildReviewResponse(reviewsFlux);
+    }*/
+
     private void validate(Review review) {
         var constraintViolations = validator.validate(review);
         log.info("constraintViolations : {} ", constraintViolations);
@@ -60,14 +70,10 @@ public class ReviewHandler {
         }
     }
 
-   /* public Mono<ServerResponse> getReviews(ServerRequest request) {
-        var reviewsFlux = reviewReactiveRepository.findAll();
-        return buildReviewResponse(reviewsFlux);
-    }*/
-
     public Mono<ServerResponse> updateReview(ServerRequest request) {
         var reviewId = request.pathVariable("id");
         var existingReview = reviewReactiveRepository.findById(reviewId);
+               // .switchIfEmpty(Mono.error(new ReviewNotFoundException("Review not found for the given Review id: " + reviewId )));
         return existingReview
                 .flatMap(review -> request.bodyToMono(Review.class)
                         .map(reqReview -> {
@@ -77,7 +83,8 @@ public class ReviewHandler {
                         })
                         .flatMap(reviewReactiveRepository::save)
                         .flatMap(savedReview -> ServerResponse.ok().bodyValue(savedReview))
-                );
+                )
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> deleteReview(ServerRequest request) {
@@ -98,9 +105,5 @@ public class ReviewHandler {
             var reviews = reviewReactiveRepository.findAll();
             return buildReviewResponse(reviews);
         }
-    }
-
-    private static Mono<ServerResponse> buildReviewResponse(Flux<Review> reviewsFlux) {
-        return ServerResponse.ok().body(reviewsFlux, Review.class);
     }
 }
