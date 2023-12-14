@@ -137,3 +137,7 @@ Here is a table that summarizes the key differences between the two methods: <br
    6. Click "replace" to confirm the extraction.
 ### 10. Unit Testing Functional Web
 - * Unit Test the POST endpoint for creating a new Review
+### 11. Bean Validations using Functional Web
+1. Adding the Constraint AnnotationMessages in the Review Document
+2. Validating the Bean using the Validator 
+3. Unit Testing Bean Validation
