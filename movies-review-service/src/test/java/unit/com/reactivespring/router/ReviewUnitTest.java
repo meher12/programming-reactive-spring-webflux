@@ -1,6 +1,7 @@
 package com.reactivespring.router;
 
 import com.reactivespring.domain.Review;
+import com.reactivespring.exceptionhandler.GlobalErrorHandler;
 import com.reactivespring.handler.ReviewHandler;
 import com.reactivespring.repository.ReviewReactiveRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.isA;
 
 @WebFluxTest
-@ContextConfiguration(classes = {ReviewRouter.class, ReviewHandler.class})
+@ContextConfiguration(classes = {ReviewRouter.class, ReviewHandler.class, GlobalErrorHandler.class})
 @AutoConfigureWebTestClient
 class ReviewUnitTest {
 
@@ -71,7 +72,9 @@ class ReviewUnitTest {
                 .bodyValue(review)
                 .exchange()
                 .expectStatus()
-                .isBadRequest();
+                .isBadRequest()
+                .expectBody(String.class)
+                .isEqualTo("rating.movieInfoId : must not be null, rating.negative : please pass a non-negative value");
 
     }
 }

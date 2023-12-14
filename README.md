@@ -141,3 +141,5 @@ Here is a table that summarizes the key differences between the two methods: <br
 1. Adding the Constraint AnnotationMessages in the Review Document
 2. Validating the Bean using the Validator 
 3. Unit Testing Bean Validation
+### 12. Custom Global ErrorHandler in Functional Web
+- * Implement the GlobalErrorHandler in Functional Web
