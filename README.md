@@ -121,4 +121,17 @@ Here is a table that summarizes the key differences between the two methods: <br
 ### 8. Functional Web Module in Spring WebFlux
 **Project name : movies-review-service**
 1. Build a simple RestFul API using Functional Web in `ReviewRouter class`
-
+### 9. Build MoviesReview Service using Functional Web
+1. Build the POST endpoint for creating a new Review and Integration Test
+2. Build the GET endpoint for retrieving all the Reviews
+3. Nesting Endpoints using `nest()` Function
+4. Build the PUT endpoint for updating an existing Review
+5. Build the DELETE endpoint for deleting an existing Review
+6. Build the GET endpoint to retrieve reviews for a given MovieInfoId
+   To avoid duplicating the code `ServerResponse.ok().body(reviewsFlux, Review.class);`, follow these steps using IntelliJ IDEA:
+   1. Highlight the line of code: `ServerResponse.ok().body(reviewsFlux, Review.class);`
+   2. Right-click on the highlighted code.
+   3. Choose "Refactor" from the context menu.
+   4. Select "Extract Method" from the submenu.
+   5. IntelliJ IDEA will prompt you to name the method. Provide the name `buildReviewResponse`.
+   6. Click "replace" to confirm the extraction.
