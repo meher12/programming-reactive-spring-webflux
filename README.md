@@ -157,3 +157,9 @@ Here is a table that summarizes the key differences between the two methods: <br
      ```
     .switchIfEmpty(ServerResponse.notFound().build());
     ```
+### 14. MoviesService - Rest Service connects the MovieInfo and MovieReview Service
+**Create a project named: movies-service**
+1. Setting Up the  `WebClientConfig` class in `config` package
+2. Build the NonBlocking REST Client for `MovieInfoService` using Spring WebClient by adding `MoviesInfoRestClient` class in `client` package
+3. Build the NonBlocking REST Client for `ReviewService` using Spring WebClient, create `ReviewRestClient` class
+4. Combine the MoviesInfoRestClient and ReviewRestClient in `MoviesController` controller

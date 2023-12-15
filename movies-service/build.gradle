@@ -1,0 +1,54 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.6'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.reactivespring'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// MongoDB Reactive support
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+
+	// Validator for input validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Spring WebFlux for reactive web support
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// Lombok for reducing boilerplate code
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// Embedded MongoDB for testing purposes
+	implementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.3.3'
+
+	// Reactor Test for testing reactive components
+	testImplementation 'io.projectreactor:reactor-test'
+}
+
+tasks.named('bootBuildImage') {
+	builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+sourceSets {
+	test {
+		// Configure Unit and Integration Test Folders in Gradle
+		java.srcDirs = ['src/test/java/unit', 'src/test/java/intg']
+	}
+}
