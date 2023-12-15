@@ -163,3 +163,9 @@ Here is a table that summarizes the key differences between the two methods: <br
 2. Build the NonBlocking REST Client for `MovieInfoService` using Spring WebClient by adding `MoviesInfoRestClient` class in `client` package
 3. Build the NonBlocking REST Client for `ReviewService` using Spring WebClient, create `ReviewRestClient` class
 4. Combine the MoviesInfoRestClient and ReviewRestClient in `MoviesController` controller
+### 15. Handling Network Exceptions in WebClient
+1. Adding `ResponseEntity` on `getByIdMoviesInfo` method of `MoviesInfoController` class
+2. Create GlobalErrorHandler class
+3. Handling 4XX in `MoviesInfoRestClient` for `MoviesInfoService` in WebClient
+4. Handling 5xx in `MoviesInfoRestClient` for `MoviesInfoService` in WebClient
+5. Implement the 4XX and 5XX error handling in ReviewsClient
