@@ -36,6 +36,10 @@ dependencies {
 
 	// Reactor Test for testing reactive components
 	testImplementation 'io.projectreactor:reactor-test'
+
+	// wiremock
+	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.1.0'
+
 }
 
 tasks.named('bootBuildImage') {

@@ -122,6 +122,7 @@ Here is a table that summarizes the key differences between the two methods: <br
 **Project name : movies-review-service**
 1. Build a simple RestFul API using Functional Web in `ReviewRouter class`
 ### 9. Build MoviesReview Service using Functional Web
+* Functional Web within the Spring framework entails adopting a functional programming paradigm to articulate routes in Spring WebFlux, which is the reactive web module of the Spring Framework. In this methodology, routes are crafted using functional constructs as opposed to the conventional approach of employing annotated controllers.
 1. Build the POST endpoint for creating a new Review and Integration Test
 2. Build the GET endpoint for retrieving all the Reviews
 3. Nesting Endpoints using `nest()` Function
@@ -169,3 +170,30 @@ Here is a table that summarizes the key differences between the two methods: <br
 3. Handling 4XX in `MoviesInfoRestClient` for `MoviesInfoService` in WebClient
 4. Handling 5xx in `MoviesInfoRestClient` for `MoviesInfoService` in WebClient
 5. Implement the 4XX and 5XX error handling in ReviewsClient
+### 16. Integration Testing External Services using WireMock
+* WireMock is a versatile library designed for stubbing and mocking HTTP interactions. By enabling you to configure predefined responses for specific HTTP endpoints, it becomes a valuable tool for testing scenarios involving your application's interactions with external HTTP-based services.
+<br>**Benefits of WireMock:**
+  - Easy to test the success scenarios (2xx)
+  - Test the contract
+  - Serialization/Deserialization
+  - Easy to simulate error scenarios 4xx 5xx
+  - SocketTimeout Exceptions and more..
+1. SetUp Wiremock in Integration Tests
+    ```groovy
+    // wiremock
+        testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.1.0'
+    ```
+   - Create `MoviesControllerIntgTest` class
+    ```java
+    @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    @ActiveProfiles("test")
+    @AutoConfigureWebClient
+    @AutoConfigureWireMock(port = 8084) // automaticaly spins up a httpserver in port 8084
+    @TestPropertySource(properties = {
+            "restClient.moviesInfoUrl=http://localhost:8084/v1/movieinfos",
+            "restClient.reviewsUrl=http://localhost:8084/v1/reviews",
+    })
+    ```
+   - Create `retrieveMovieById()` test method
+2. Simulate 4xx Errors in Wiremock
+3. Simulate 5xx Errors in Wiremock

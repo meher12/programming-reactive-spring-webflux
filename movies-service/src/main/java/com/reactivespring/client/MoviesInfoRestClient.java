@@ -38,7 +38,7 @@ public class MoviesInfoRestClient {
                         // If the status code is NOT_FOUND (404), throw an exception
                         // indicating no movie info available for the requested ID.
                         return Mono.error(new MoviesInfoClientException(
-                                "There is no MovieInfo Avaialble for the passed in id: " + movieId,
+                                "There is no MovieInfo Available for the passed in id: " + movieId,
                                 clientResponse.statusCode().value()));
                     }
                     // For other 4xx errors, read the response message and throw an exception
