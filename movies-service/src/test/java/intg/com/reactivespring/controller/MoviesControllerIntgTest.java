@@ -95,7 +95,7 @@ class MoviesControllerIntgTest {
                 .isEqualTo("There is no MovieInfo Available for the passed in id: abc");
         //then
         WireMock.verify(1, getRequestedFor(urlEqualTo("/v1/movieinfos/" + movieId)));
-        ;
+
     }
 
     @Test
@@ -118,7 +118,7 @@ class MoviesControllerIntgTest {
                 .expectStatus().is2xxSuccessful();
         //then
         WireMock.verify(1, getRequestedFor(urlEqualTo("/v1/movieinfos/" + movieId)));
-        ;
+
     }
 
     @Test
@@ -146,7 +146,8 @@ class MoviesControllerIntgTest {
                     assertEquals("Server Exception in MoviesInfoServiceMovieInfo Service Unavailable", message);
                 });
         //then
-        WireMock.verify(1, getRequestedFor(urlEqualTo("/v1/movieinfos/" + movieId)));
+        // Verify that 4 requests were made to the movie info endpoint for a specific movie.
+        WireMock.verify(4, getRequestedFor(urlEqualTo("/v1/movieinfos/" + movieId)));
     }
 
     @Test
@@ -175,7 +176,8 @@ class MoviesControllerIntgTest {
                     assertEquals("Server Exception in ReviewServiceReview Service Unavailable", message);
                 });
         //then
-        WireMock.verify(1, getRequestedFor(urlPathMatching("/v1/reviews*")));
+        // Verify that the endpoint `/v1/reviews*` was called exactly 4 times.
+        WireMock.verify(4, getRequestedFor(urlPathMatching("/v1/reviews*")));
     }
 
 }

@@ -197,3 +197,25 @@ Here is a table that summarizes the key differences between the two methods: <br
    - Create `retrieveMovieById()` test method
 2. Simulate 4xx Errors in Wiremock
 3. Simulate 5xx Errors in Wiremock
+### 17. Retrying Failed HTTP Calls
+- Retrying failed calls in `retrieveMovieInfo()` method in `MoviesInfoRestClient` class and `retrieveMovieById_5XX()` test method:
+  1. Retry ` .retry(N)` the failed call N number of times before giving up.
+     - to Verify the number of requests we are using `WireMock.verify(N // Expecting N calls, getRequestedFor(urlPathMatching("url*")) // Verify calls to url*);`
+  2. Retry the failed call with a backoff. `.retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1)))`
+    * Retry specific exceptions: to solve `Retries exhausted` exception we must use `onRetryExhaustedThrow`:
+      ```java
+        // Configure a retry spec with:
+         // - Maximum attempts: 3
+         // - Delay between retries: 1 second
+         // - Retry only if the exception is of type MoviesInfoServerException.
+         // - Exception handling: Throw the original exception on final failure.
+        var retrySpec = Retry.fixedDelay(3, Duration.ofSeconds(1))
+          .filter(ex -> ex instanceof MoviesInfoServerException)
+         .onRetryExhaustedThrow(((retryBackoffSpec, retrySignal) ->
+         // Re-throw the caught exception to indicate unrecoverable failure.
+           Exceptions.propagate(retrySignal.failure())));
+      ```
+    * Retry only 5xx not 4xx exceptions by use `.filter(ex -> ex instanceof MoviesInfoServerException)` testing with `retrieveMovieById_404()` method
+  3. Reusing the retry logic across different Rest Clients:
+     - Create a `RetryUtil` class in util package and use it in `MoviesInfoRestClient` and `ReviewRestClient` classes
+     
