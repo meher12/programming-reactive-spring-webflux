@@ -71,6 +71,49 @@ class MoviesInfoControllerIntegTest {
     }
 
     @Test
+    void getAllMovieInfos_stream() {
+
+        //Given
+        var movieinfos = new MovieInfo(null, "Batman Begins1",
+                2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+        //When
+        webTestClient
+                .post()
+                .uri(MOVIES_INFO_URL)
+                .bodyValue(movieinfos)
+                .exchange()
+                .expectStatus()
+                .isCreated()
+                .expectBody(MovieInfo.class)
+                .consumeWith(movieInfoEntityExchangeResult -> {
+
+                    var savedMovieInfo = movieInfoEntityExchangeResult.getResponseBody();
+                    assertNotNull(savedMovieInfo);
+                    assertNotNull(savedMovieInfo.getMovieInfoId());
+
+                    /*assert savedMovieInfo !=null;
+                    assert savedMovieInfo.getMovieInfoId()!=null;*/
+
+                });
+
+       var movieStreamFlux =  webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL+"/stream")
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .returnResult(MovieInfo.class)
+               .getResponseBody();
+
+       StepVerifier.create(movieStreamFlux)
+               .assertNext(movieInfo -> {
+                   assertNotNull(movieInfo.getMovieInfoId());
+               })
+               .thenCancel()
+               .verify();
+    }
+
+    @Test
     void getAllMovieInfosByYear() {
 
         var year = 2008;

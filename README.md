@@ -218,4 +218,14 @@ Here is a table that summarizes the key differences between the two methods: <br
     * Retry only 5xx not 4xx exceptions by use `.filter(ex -> ex instanceof MoviesInfoServerException)` testing with `retrieveMovieById_404()` method
   3. Reusing the retry logic across different Rest Clients:
      - Create a `RetryUtil` class in util package and use it in `MoviesInfoRestClient` and `ReviewRestClient` classes
-     
+### 18. Server Sent Events (SSE)  
+1. Build a Streaming POST and GET Endpoint in MoviesInfoService Controller using:
+   ```java
+   // get all movie info
+    Sinks.many().replay().all()
+   // latest
+   Sinks.many().replay().latest();
+   ```
+2. Integration Test for the Streaming Endpoint by create the `getAllMovieInfos_stream()` method
+3. Build a Streaming POST and GET Endpoint in `ReviewRouter` class in `MoviesReviewService` 
+4. Build a Streaming Client using WebClient in `MoviesController` in MoviesService
