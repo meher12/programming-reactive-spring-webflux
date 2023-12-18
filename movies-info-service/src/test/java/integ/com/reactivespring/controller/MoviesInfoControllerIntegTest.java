@@ -150,6 +150,17 @@ class MoviesInfoControllerIntegTest {
     }
 
     @Test
+    void getMovieInfoById_NotFound() {
+        var id = "def";
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "/{id}", id)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
     void findByYear() {
 
         // when
@@ -214,6 +225,21 @@ class MoviesInfoControllerIntegTest {
                     assert savedMovieInfo.getMovieInfoId()!=null;*/
 
                 });
+    }
+
+    @Test
+    void updateMovieInfo_notFound() {
+        var id = "abc1";
+        var updatedMovieInfo = new MovieInfo("abc", "Dark Knight Rises 1",
+                2013, List.of("Christian Bale1", "Tom Hardy1"), LocalDate.parse("2012-07-20"));
+
+        webTestClient
+                .put()
+                .uri(MOVIES_INFO_URL + "/{id}", id)
+                .bodyValue(updatedMovieInfo)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
     }
 
     @Test

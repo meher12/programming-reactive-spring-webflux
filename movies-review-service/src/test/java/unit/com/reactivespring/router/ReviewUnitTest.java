@@ -4,8 +4,7 @@ import com.reactivespring.domain.Review;
 import com.reactivespring.exceptionhandler.GlobalErrorHandler;
 import com.reactivespring.handler.ReviewHandler;
 import com.reactivespring.repository.ReviewReactiveRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.reactivespring.validator.ReviewValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -18,6 +17,8 @@ import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doCallRealMethod;
 
 @WebFluxTest
 @ContextConfiguration(classes = {ReviewRouter.class, ReviewHandler.class, GlobalErrorHandler.class})
@@ -26,6 +27,9 @@ class ReviewUnitTest {
 
     @MockBean
     ReviewReactiveRepository reviewReactiveRepository;
+
+    @MockBean
+    private ReviewValidator reviewValidator;
 
     @Autowired
     private WebTestClient webTestClient;
@@ -76,5 +80,50 @@ class ReviewUnitTest {
                 .expectBody(String.class)
                 .isEqualTo("rating.movieInfoId : must not be null, rating.negative : please pass a non-negative value");
 
+    }
+
+    @Test
+    void updateReview() {
+        //given
+
+        var reviewUpdate = new Review(null, 1L, "Not an Awesome Movie", 8.0);
+
+        when(reviewReactiveRepository.save(isA(Review.class))).thenReturn(Mono.just(new Review("abc", 1L, "Not an Awesome Movie", 8.0)));
+        when(reviewReactiveRepository.findById((String) any())).thenReturn(Mono.just(new Review("abc", 1L, "Awesome Movie", 9.0)));
+        doCallRealMethod().when(reviewValidator).validate(any(), any());
+        //when
+
+
+        webTestClient
+                .put()
+                .uri("/v1/reviews/{id}", "abc")
+                .bodyValue(reviewUpdate)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Review.class)
+                .consumeWith(reviewResponse ->{
+                    var updatedReview = reviewResponse.getResponseBody();
+                    assert updatedReview != null;
+                    System.out.println("updatedReview : "+ updatedReview);
+                    assertEquals(8.0,updatedReview.getRating());
+                    assertEquals("Not an Awesome Movie", updatedReview.getComment());
+                });
+
+    }
+
+    @Test
+    void deleteReview() {
+        //given
+        var reviewId= "abc";
+        when(reviewReactiveRepository.findById((String) any())).thenReturn(Mono.just(new Review("abc", 1L, "Awesome Movie", 9.0)));
+        when(reviewReactiveRepository.deleteById((String) any())).thenReturn(Mono.empty());
+        doCallRealMethod().when(reviewValidator).validate(any(), any());
+
+        //when
+        webTestClient
+                .delete()
+                .uri("/v1/reviews/{id}", reviewId)
+                .exchange()
+                .expectStatus().isNoContent();
     }
 }

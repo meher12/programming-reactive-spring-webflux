@@ -229,3 +229,5 @@ Here is a table that summarizes the key differences between the two methods: <br
 2. Integration Test for the Streaming Endpoint by create the `getAllMovieInfos_stream()` method
 3. Build a Streaming POST and GET Endpoint in `ReviewRouter` class in `MoviesReviewService` 
 4. Build a Streaming Client using WebClient in `MoviesController` in MoviesService
+
+**NB: Added ReviewValidator and MoviesControllerUnitTest classes, along with both Integration and Unit Tests in this last Git commit**
